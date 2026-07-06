@@ -1,34 +1,50 @@
 # Paper to Lecture Notes
 
-A [Claude Code](https://claude.com/claude-code) skill that expands a terse research paper — or a pile of dense notes — into **self-contained, professionally typeset lecture notes**.
+An agent skill that expands a terse research paper — or a pile of dense notes — into **self-contained, professionally typeset lecture notes**. Ships in two editions: a [Claude Code](https://claude.com/claude-code) plugin and a framework-neutral port for [Codex CLI](https://developers.openai.com/codex) and other agents.
 
 Every concept is built from scratch, every theorem gets a gap-free proof, one non-degenerate worked example runs through every chapter, every quoted number traces to runnable code, and the result is gated by a 100-point acceptance rubric with six hard gates.
 
 Distilled from a real run: a terse ~11-page PRX paper expanded into a 131-page typeset note with a clean three-pass LaTeX build.
 
-## Installation
+## Which edition should I install?
 
-**Plugin (recommended)** — inside Claude Code:
+The method, standards, and reference material are identical — pick by the agent you use:
+
+| You use… | Install | Why this edition |
+|---|---|---|
+| **Claude Code** | `skills/paper2notes/` (plugin, below) | Runs the build on Claude Code's Workflow runtime: schema-validated agent returns, pipelined phases, progress UI. The best-supported edition. |
+| **Codex CLI** | `general-agents/paper2notes/` | Same multi-agent build, orchestrated by Codex as lead: workers are spawned as `codex exec` subprocesses, results passed as files. |
+| **Any other agent** (shell + file access) | `general-agents/paper2notes/` | Framework-neutral: works with any subagent API or headless CLI; degrades gracefully to fully sequential (`MAXPAR: 1`). |
+
+Install **one edition per agent** — they don't conflict (different skill directories), but installing both into the same agent would duplicate triggering.
+
+### Claude Code (plugin — recommended)
+
+Inside Claude Code:
 
 ```
 /plugin marketplace add Shiling42/paper2notes
 /plugin install paper2notes@paper2notes
 ```
 
-**Manual** — copy the skill into your personal skills directory:
+Or manually, without the plugin system:
 
 ```bash
 git clone https://github.com/Shiling42/paper2notes.git
 cp -R paper2notes/skills/paper2notes ~/.claude/skills/
 ```
 
-**Codex / other agent frameworks** — a framework-neutral port that runs the same
-multi-agent build by spawning worker subprocesses (no Claude Code runtime needed) lives in
-[`general-agents/`](general-agents/):
+### Codex CLI and other agents
 
 ```bash
-cp -R paper2notes/general-agents/paper2notes ~/.codex/skills/   # Codex CLI
+git clone https://github.com/Shiling42/paper2notes.git
+cp -R paper2notes/general-agents/paper2notes ~/.codex/skills/   # or ~/.agents/skills/
 ```
+
+Restart Codex; trigger implicitly ("turn this paper into lecture notes") or explicitly
+with `$paper2notes`. For non-Codex frameworks, point your agent at
+`general-agents/paper2notes/SKILL.md` as its task instructions — see
+[`general-agents/README.md`](general-agents/README.md).
 
 ## Usage
 
