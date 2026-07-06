@@ -1,0 +1,60 @@
+% ============================================================================
+%  master.tex — top-level driver for the lecture notes (scaffold template)
+%
+%  Copy this file (together with compile_one.sh / build_all.sh /
+%  check_figure.sh / contract_template.md) into your project directory and
+%  fill the REPLACE-FOR-YOUR-PAPER slots. It is written to compile against
+%  EITHER preamble flavour:
+%    * a plain amsthm preamble (early drafting), OR
+%    * the shipped professional preamble (references/preamble_lecture_notes.tex,
+%      saved into the project as preamble.tex) — same \input{preamble} line,
+%      zero edits to this file or to any chapter (the KEY TRICK: amsthm names
+%      are preserved; the boxes are a pure visual layer).
+% ============================================================================
+\documentclass[11pt,oneside]{report}
+
+\input{preamble}   % the project's preamble.tex (plain OR professional)
+
+% ----- title hooks ----------------------------------------------------------
+\title{REPLACE FOR YOUR PAPER: Lecture-Note Title}
+\author{REPLACE FOR YOUR PAPER: Author}
+\date{\today}   % or a fixed date string
+
+% Subtitle line on the custom title page (used by the professional preamble;
+% harmlessly unused under a plain preamble thanks to \providecommand).
+\providecommand{\notessubtitle}{}
+\renewcommand{\notessubtitle}{REPLACE FOR YOUR PAPER: a self-contained
+  lecture-note derivation, with full proofs and a worked running example}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+% ----- chapters -------------------------------------------------------------
+% One \input line per chapter, in reading order. Chapter files live in
+% chapters/ and each begins with its own \chapter{...}. Two examples:
+%
+% \input{chapters/ch0}   % 0  Prologue: the physical puzzle, the punchline, the roadmap
+% \input{chapters/ch1}   % 1  Setup: the toolbox built from scratch
+%
+% >>> add your \input lines here (uncomment / extend) <<<
+
+% ----- appendices -----------------------------------------------------------
+\appendix
+% \input{chapters/appA}  % A  Deferred full proofs (e.g. the heavy induction)
+% \input{chapters/appB}  % B  Verifier-script listing / numerics provenance
+
+% ----- bibliography ---------------------------------------------------------
+% Uncomment BOTH lines (and create refs.bib) as soon as any chapter \cite's
+% anything. WHY this hook exists: the acceptance rubric's build gate demands a
+% clean build with ZERO undefined references/citations, and in the real run the
+% referee caught a missing bibliography as a blocker — wire it up early, not at
+% the end. build_all.sh auto-detects an UNCOMMENTED \bibliography{...} line
+% here and switches from pdflatex x3 to the pdflatex / bibtex / pdflatex x2
+% sequence, so no build-script edit is needed.
+%
+% \bibliographystyle{unsrt}
+% \bibliography{refs}
+
+\end{document}

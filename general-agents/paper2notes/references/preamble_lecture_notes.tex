@@ -1,0 +1,310 @@
+% ============================================================================
+%  preamble_lecture_notes.tex
+%  A ready-to-use, professional lecture-notes preamble for the `report` class.
+%
+%  Distilled and GENERALIZED from a real, tested preamble that compiled a
+%  131-page lecture book cleanly (a terse PRX paper expanded into self-contained
+%  notes). Everything here is PROJECT-AGNOSTIC; the only thing you customise is
+%  the clearly-marked block near the bottom (title-page subtitle + domain math
+%  macros). Drop this file next to your master and `\input` it.
+%
+%  --------------------------------------------------------------------------
+%  THE KEY TRICK  (read this once -- it is why this preamble is reusable)
+%  --------------------------------------------------------------------------
+%  Theorems are declared with plain `amsthm` (\newtheorem); the colored, tinted,
+%  left-barred BOX around each is added PURELY as a visual layer, by wrapping
+%  the existing amsthm environment with tcolorbox's \tcolorboxenvironment. The
+%  environment NAMES, COUNTERS, and \label scheme are unchanged, so the calling
+%  convention in your chapters stays the ORDINARY one:
+%
+%        \begin{theorem}\label{thm:foo} ... \end{theorem}
+%
+%    * Do NOT convert theorems to \newtcbtheorem / \newtcolorbox theorem boxes:
+%      that changes the calling convention (\begin{theorem}{title}{label}) and
+%      breaks every chapter. Keep amsthm + \tcolorboxenvironment.
+%    * If a compile error arises, fix the offending chapter construct, not this
+%      design. Do not "simplify" the preamble away during assembly.
+%
+%  Full WHY -- the layering discipline, package stack and load order, font and
+%  heading design, the sanctioned 5-color palette, and failure modes -- lives in
+%  references/typesetting_guide.md, the source of truth for this design.
+%  (Palette hex values are defined once, in the COLOR PALETTE block below.)
+%
+%  Requires a reasonably complete TeX Live (newpx, tgheros, tcolorbox[most],
+%  titlesec, microtype, beramono). To locate pdflatex, probe in order:
+%  `command -v pdflatex`; else /Library/TeX/texbin/pdflatex (macOS MacTeX);
+%  else /usr/local/texlive/*/bin/*/pdflatex (Linux TeX Live).
+% ============================================================================
+
+% ----- encoding, fonts, typography ------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{tgheros}                 % Helvetica-like sans: headings, captions, labels
+\usepackage{newpxtext}               % Palatino-like serif body text
+\usepackage{newpxmath}               % matching math (load AFTER newpxtext)
+\usepackage{bm}
+\usepackage[scaled=0.86]{beramono}   % clean mono for code/paths (optional use)
+\usepackage{microtype}               % refined spacing/kerning -- load late
+\linespread{1.06}                    % a touch more leading for readability
+
+% ----- page geometry ---------------------------------------------------------
+\usepackage[a4paper,top=1.15in,bottom=1.2in,inner=1.25in,outer=1.25in,
+            headheight=14pt,marginparwidth=0.9in]{geometry}
+
+% ----- graphics, color, tables, lists ---------------------------------------
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{colortbl}          % row/cell color for styled results tables (archetype I)
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,decorations.pathmorphing,%
+  backgrounds,fit,patterns,shapes.geometric,plotmarks}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{needspace}
+
+% hyperref late; bookmarks; soft colored links
+\usepackage[colorlinks=true,linktoc=all]{hyperref}
+
+% ----------------------------------------------------------------------------
+%  COLOR PALETTE  (the only sanctioned colors)
+% ----------------------------------------------------------------------------
+\definecolor{navy}{HTML}{1f3b73}   % primary   / structure / theorems
+\definecolor{mpred}{HTML}{c0392b}  % emphasis  / "hot" side / warnings
+\definecolor{teal}{HTML}{16887b}   % secondary / definitions / edges
+\definecolor{gold}{HTML}{b8860b}   % tertiary  / examples / highlights / zeros
+\definecolor{inkgray}{HTML}{4a4a4a} % neutral / running headers / subsubsections / remark & proof-sketch rules
+
+\hypersetup{
+  linkcolor=navy,
+  citecolor=teal,
+  urlcolor=mpred,
+  filecolor=navy,
+  bookmarksnumbered=true,
+}
+
+% ----------------------------------------------------------------------------
+%  HEADINGS  (titlesec) -- modern colored chapter & section design
+%  Chapter opener: big faded navy chapter number, right-aligned, over a rule.
+% ----------------------------------------------------------------------------
+\titleformat{\chapter}[display]
+  {\sffamily\bfseries\color{navy}}
+  {\raggedleft\sffamily\bfseries\fontsize{56}{56}\selectfont\color{navy!22}%
+     \thechapter}
+  {6pt}
+  {\Huge\raggedright}
+  [\vspace{2pt}{\color{navy!22}\titlerule[1.2pt]}]
+\titlespacing*{\chapter}{0pt}{6pt}{22pt}
+
+\titleformat{\section}
+  {\sffamily\Large\bfseries\color{navy}}{\thesection}{0.8em}{}
+\titleformat{\subsection}
+  {\sffamily\large\bfseries\color{navy!88}}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}
+  {\sffamily\normalsize\bfseries\color{inkgray}}{\thesubsubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+\titlespacing*{\subsection}{0pt}{11pt}{4pt}
+
+% ----------------------------------------------------------------------------
+%  RUNNING HEADERS / FOOTERS  (fancyhdr, oneside)
+% ----------------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\fancyhead[L]{\sffamily\footnotesize\color{inkgray}\nouppercase{\leftmark}}
+\fancyhead[R]{\sffamily\footnotesize\color{inkgray}\nouppercase{\rightmark}}
+\fancyfoot[C]{\sffamily\small\color{navy}\thepage}
+% chapter-opening pages use the `plain` style
+\fancypagestyle{plain}{%
+  \fancyhf{}\renewcommand{\headrulewidth}{0pt}%
+  \fancyfoot[C]{\sffamily\small\color{navy}\thepage}}
+
+% ----------------------------------------------------------------------------
+%  CAPTIONS  (sans, bold colored label -- Nature-ish)
+% ----------------------------------------------------------------------------
+\captionsetup{font={small},labelfont={bf,sf,color=navy},
+  textfont={sf},labelsep=period,width=0.95\linewidth}
+
+% ----------------------------------------------------------------------------
+%  THEOREM ENVIRONMENTS  (amsthm names/counters preserved; tcolorbox styling)
+%  Step 1: colored bold sans amsthm header styles.
+%  Step 2: declare the environments with \newtheorem (ordinary calling convention).
+%  Step 3: add the visual box with \tcolorboxenvironment (THE KEY TRICK).
+% ----------------------------------------------------------------------------
+% --- Step 1: custom amsthm styles (colored bold headers) ---
+\newtheoremstyle{thmnavy}{8pt}{6pt}{\itshape}{0pt}
+  {\sffamily\bfseries\color{navy}}{.}{0.6em}{}
+\newtheoremstyle{thmteal}{8pt}{6pt}{\normalfont}{0pt}
+  {\sffamily\bfseries\color{teal!85!black}}{.}{0.6em}{}
+\newtheoremstyle{thmgold}{8pt}{6pt}{\normalfont}{0pt}
+  {\sffamily\bfseries\color{gold!72!black}}{.}{0.6em}{}
+\newtheoremstyle{thmremark}{8pt}{6pt}{\normalfont}{0pt}
+  {\itshape\color{inkgray}}{.}{0.5em}{}
+
+% --- Step 2: declare environments (shared counter, numbered within chapter) ---
+\theoremstyle{thmnavy}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{thmteal}
+\newtheorem{definition}[theorem]{Definition}
+
+\theoremstyle{thmgold}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{thmremark}
+\newtheorem{remark}[theorem]{Remark}
+
+% convenience alias: \begin{defn}...\end{defn}
+\newenvironment{defn}{\begin{definition}}{\end{definition}}
+
+% --- Step 3: visual boxes -- wrap the amsthm environments (THE KEY TRICK).
+% navy = theorem/proposition/lemma/corollary; teal = definition;
+% gold = example; gray = remark. Calling convention stays \begin{...}\end{...}.
+\tcolorboxenvironment{theorem}{
+  enhanced jigsaw, breakable, before skip=10pt, after skip=10pt,
+  boxrule=0pt, frame hidden, sharp corners,
+  colback=navy!5, borderline west={3pt}{0pt}{navy},
+  left=12pt,right=10pt,top=7pt,bottom=7pt}
+\tcolorboxenvironment{proposition}{
+  enhanced jigsaw, breakable, before skip=10pt, after skip=10pt,
+  boxrule=0pt, frame hidden, sharp corners,
+  colback=navy!5, borderline west={3pt}{0pt}{navy},
+  left=12pt,right=10pt,top=7pt,bottom=7pt}
+\tcolorboxenvironment{lemma}{
+  enhanced jigsaw, breakable, before skip=10pt, after skip=10pt,
+  boxrule=0pt, frame hidden, sharp corners,
+  colback=navy!5, borderline west={3pt}{0pt}{navy},
+  left=12pt,right=10pt,top=7pt,bottom=7pt}
+\tcolorboxenvironment{corollary}{
+  enhanced jigsaw, breakable, before skip=10pt, after skip=10pt,
+  boxrule=0pt, frame hidden, sharp corners,
+  colback=navy!5, borderline west={3pt}{0pt}{navy},
+  left=12pt,right=10pt,top=7pt,bottom=7pt}
+\tcolorboxenvironment{definition}{
+  enhanced jigsaw, breakable, before skip=10pt, after skip=10pt,
+  boxrule=0pt, frame hidden, sharp corners,
+  colback=teal!6, borderline west={3pt}{0pt}{teal!85!black},
+  left=12pt,right=10pt,top=7pt,bottom=7pt}
+\tcolorboxenvironment{example}{
+  enhanced jigsaw, breakable, before skip=10pt, after skip=10pt,
+  boxrule=0pt, frame hidden, sharp corners,
+  colback=gold!7, borderline west={3pt}{0pt}{gold!72!black},
+  left=12pt,right=10pt,top=7pt,bottom=7pt}
+\tcolorboxenvironment{remark}{
+  enhanced jigsaw, breakable, before skip=8pt, after skip=8pt,
+  boxrule=0pt, frame hidden, sharp corners,
+  colback=black!3, borderline west={2.2pt}{0pt}{inkgray},
+  left=11pt,right=8pt,top=5pt,bottom=5pt}
+
+% ----------------------------------------------------------------------------
+%  BOXED-RESULT ENVIRONMENT  (keyresult tcolorbox -- headline result of a chapter)
+%  Use sparingly: at most one or two per chapter.
+% ----------------------------------------------------------------------------
+\newtcolorbox{keyresult}[1][]{%
+  enhanced, breakable,
+  colback=gold!7,
+  colframe=gold!75!black,
+  boxrule=0.9pt,
+  arc=2.5pt,
+  left=8pt,right=8pt,top=8pt,bottom=8pt,
+  fonttitle=\sffamily\bfseries\color{white},
+  coltitle=white,
+  attach boxed title to top left={yshift=-2.6mm,xshift=5mm},
+  boxed title style={colback=gold!75!black,arc=1pt},
+  title={Key result},
+  #1,
+}
+
+% ----------------------------------------------------------------------------
+%  GENERIC MATH MACROS  (domain-agnostic -- safe to keep on any project)
+% ----------------------------------------------------------------------------
+\newcommand{\bL}{\mathbf{L}}              % a bold matrix L (Laplacian/operator)
+\newcommand{\bI}{\mathbf{I}}              % identity
+\newcommand{\bone}{\mathbf{1}}            % all-ones vector
+\newcommand{\adj}{\operatorname{adj}}     % adjugate
+\newcommand{\Cov}{\operatorname{Cov}}     % covariance
+\newcommand{\sgn}{\operatorname{sgn}}     % sign
+\newcommand{\diag}{\operatorname{diag}}   % diagonal matrix
+\newcommand{\Tr}{\operatorname{Tr}}       % trace
+\newcommand{\Res}{\operatorname{Res}}     % residue
+\providecommand{\R}{}\renewcommand{\R}{\mathbb{R}} % reals (robust if predefined)
+\providecommand{\C}{}\renewcommand{\C}{\mathbb{C}} % complex  (robust if predefined)
+\providecommand{\N}{}\renewcommand{\N}{\mathbb{N}} % naturals (robust if predefined)
+\providecommand{\Z}{}\renewcommand{\Z}{\mathbb{Z}} % integers (robust if predefined)
+\newcommand{\ee}{\mathrm{e}}              % Euler's number
+\newcommand{\dd}{\mathrm{d}}              % differential d
+\newcommand{\eps}{\varepsilon}
+\newcommand{\la}{\lambda}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+% ============================================================================
+%  ====  CUSTOMISE PER PROJECT  ===============================================
+%  Everything ABOVE is project-agnostic. Edit ONLY this block per document.
+% ============================================================================
+
+% --- (a) Title-page subtitle: the italic line under the title rule.
+%     Set this in your master with \renewcommand{\notessubtitle}{...} BEFORE
+%     \maketitle, or edit the default here.
+\providecommand{\notessubtitle}{A self-contained set of lecture notes}
+
+% --- (b) Domain-specific math macros for YOUR paper. Examples (delete/replace):
+%   \newcommand{\bpi}{\bm{\pi}}              % a bold Greek vector
+%   \newcommand{\Psimat}{\bm{\Psi}}          % a named bold matrix
+%   \newcommand{\Zw}{\mathcal{Z}_\omega}     % a named scalar / partition function
+%   \newcommand{\osc}{\operatorname{osc}}    % a domain operator
+% (Define them here so chapters can use a single fixed notation.)
+
+% ============================================================================
+%  ====  END CUSTOMISE PER PROJECT  ===========================================
+% ============================================================================
+
+% ----------------------------------------------------------------------------
+%  TITLE PAGE  (custom; respects \title/\author/\date set in the master)
+% ----------------------------------------------------------------------------
+\makeatletter
+\renewcommand{\maketitle}{%
+  % titlepage resets the page counter; suppress its hyperref page anchor so it
+  % does not collide with the real page 1 (avoids a pdfTeX duplicate-destination warning).
+  \hypersetup{pageanchor=false}%
+  \begin{titlepage}
+  \centering
+  \vspace*{0.16\textheight}
+  {\color{navy}\rule{\textwidth}{1.4pt}}\\[1.4em]
+  {\sffamily\bfseries\color{navy}\fontsize{30}{34}\selectfont \@title \par}
+  \vspace{1.1em}
+  {\color{navy}\rule{\textwidth}{1.4pt}}\\[2.4em]
+  {\large\itshape \notessubtitle \par}
+  \vfill
+  {\sffamily\large\@author \par}
+  \vspace{0.7em}
+  {\large \@date \par}
+  \vspace*{0.10\textheight}
+  \end{titlepage}%
+  \hypersetup{pageanchor=true}}
+\makeatother
+
+% ----------------------------------------------------------------------------
+%  misc
+% ----------------------------------------------------------------------------
+\graphicspath{{figs/}{../figs/}{./}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+% prefer slightly loose lines over margin-breaking overfull boxes
+% (TeX's emergency pass only runs when normal line breaking fails)
+\setlength{\emergencystretch}{1.5em}
+\setlist{itemsep=2pt,topsep=4pt}
+\allowdisplaybreaks

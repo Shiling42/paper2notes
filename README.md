@@ -22,6 +22,14 @@ git clone https://github.com/Shiling42/paper2notes.git
 cp -R paper2notes/skills/paper2notes ~/.claude/skills/
 ```
 
+**Codex / other agent frameworks** — a framework-neutral port that runs the same
+multi-agent build by spawning worker subprocesses (no Claude Code runtime needed) lives in
+[`general-agents/`](general-agents/):
+
+```bash
+cp -R paper2notes/general-agents/paper2notes ~/.codex/skills/   # Codex CLI
+```
+
 ## Usage
 
 Just ask in natural language — the skill triggers on intent:

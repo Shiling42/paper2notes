@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.0 — 2026-07-06
+
+- Added `general-agents/` — a framework-neutral port of the skill in the open Agent Skills format, installable into Codex CLI (`~/.codex/skills/`) or any agent with shell + file access. The loading agent becomes the LEAD orchestrator and runs the same multi-agent build (draft / 3-lens adversarial verify / typeset / referee) by spawning worker subprocesses with file-based result passing. Adversarially reviewed against the original (16 findings fixed). The Claude Code plugin itself is unchanged.
+
 ## 2.1.1 — 2026-07-06
 
 - Scaffold scripts now honor a `TEXBIN` environment variable in their pdflatex probe (PATH → `$TEXBIN` → MacTeX → TeX Live glob)

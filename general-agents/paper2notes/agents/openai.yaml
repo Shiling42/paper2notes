@@ -1,0 +1,7 @@
+interface:
+  display_name: "paper2notes"
+  short_description: "Paper → self-contained typeset lecture notes (multi-agent build)"
+  default_prompt: "Use $paper2notes to expand this paper into self-contained lecture notes with full proofs, a running worked example, code-verified numbers, and professional typesetting."
+
+policy:
+  allow_implicit_invocation: true
