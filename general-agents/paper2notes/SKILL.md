@@ -263,7 +263,13 @@ reconstruct progress from chat memory.
 
 ### Phase A — Scaffold (1 worker, barrier)
 
-Spawn **scaffold** with: create `OUT/` project structure; ADAPT the shipped templates from
+Spawn **scaffold** with: **the OUT freshness gate FIRST** — if `OUT` exists non-empty
+without build markers (`job_card.md` / `BUILD_STATE.md` / `preamble.tex`), STOP and report;
+never build into a pre-existing work folder (the build cleans `OUT` at the end). If the
+operator explicitly pre-authorized a non-empty `OUT`, the very first action is the
+protective snapshot `cd "OUT" && find . -type f | sed 's|^\./||' | sort > .preexisting_manifest`
+— `clean.sh` treats every listed path as untouchable. Then: create `OUT/` project
+structure; ADAPT the shipped templates from
 `REFS/scaffold/` — `master.tex` (title/author; one `\input{chapters/<id>}` per Job-Card
 chapter; **uncomment/add `\appendix` + `\input{chapters/appendices}` after the chapter
 inputs** — the template ships these lines commented out; stub all chapter files AND

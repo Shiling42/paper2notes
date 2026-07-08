@@ -59,6 +59,8 @@ layer** — are the heavy build, best run by the multi-agent workflow
    `references/new_paper_checklist.md`; adapt the templates rather than regenerating them
    from prose (the Phase A DELIVERABLES block of `references/build_workflow_template.js`
    remains the canonical content spec if you must scaffold by hand without them).
+   The project directory must be **fresh and dedicated** — the build writes and finally
+   cleans it (`clean.sh`, provenance-aware); never point it at an existing work folder.
    Then author a verifier script (pure numpy/scipy) that computes every quantity the notes
    will quote and **run it** to produce `numbers.md` — the single source of truth. Each
    entry cites its producing script; cross-check the key quantities ≥3 independent ways so

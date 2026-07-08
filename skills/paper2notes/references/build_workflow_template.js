@@ -675,6 +675,17 @@ log('Phase A: preamble, master file, build scripts, and the notation contract.')
 
 await agent(`You are setting up a LaTeX lecture-notes project. Create the directory and
 scaffolding under ${OUT} (create it). Quote any path containing [ ] in double quotes in bash.
+
+STEP 0 — OUT FRESHNESS GATE (do this before creating ANYTHING). ${OUT} must be a fresh,
+dedicated build directory: the build writes AND CLEANS here, so it must never share a
+folder with pre-existing work. If ${OUT} already exists and is non-empty and does NOT
+contain a previous build's markers (job_card.md / BUILD_STATE.md / preamble.tex):
+  (a) STOP and report the refusal with a listing of what is already there — recommend the
+      operator point OUT at a fresh subdirectory instead. Do NOT scaffold, unless the
+      operator explicitly pre-authorized building into a non-empty directory;
+  (b) if pre-authorized, your VERY FIRST action — before creating a single file — is the
+      protective snapshot:  cd "${OUT}" && find . -type f | sed 's|^\./||' | sort > .preexisting_manifest
+      clean.sh treats every path in that manifest as untouchable.
 Resolve pdflatex PROBE-STYLE, and make the build scripts below do the same: use
 "command -v pdflatex" if it is on PATH; else ${TEXBIN}/pdflatex; else
 /Library/TeX/texbin/pdflatex (macOS MacTeX); else the glob
@@ -1298,6 +1309,7 @@ ${SKILLREF ? `   Use the shipped, compile-tested ${SKILLREF}/references/preamble
    professional design to dodge an error.
 4. LOOK AT IT: render the title page, one chapter-opener page, and one theorem-heavy page with
    pdftoppm (e.g. pdftoppm -png -r 110 -f <page> -l <page> <pdf> <prefix>) and READ the images.
+   Use the PDF's own stem as the pdftoppm <prefix> so clean.sh's pair rule collects the renders later.
    Check: the title-page rules and fonts; the big faded chapter number and title rule; colored
    left-bar theorem/definition/example boxes; running headers and footer page number; palette
    coherence. Iterate in the sandbox until all three pages genuinely look right.
